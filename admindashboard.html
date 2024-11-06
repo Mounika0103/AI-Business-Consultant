@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage FAQs and Content</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .manage-faqs, .integrate-content {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        .input-box {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .faq-list, .content-list {
+            margin-top: 20px;
+        }
+        .faq-item, .content-item {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 5px 0;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="manage-faqs">
+    <h2>Manage FAQs</h2>
+    <input type="text" class="input-box" id="faq-question" placeholder="Question">
+    <input type="text" class="input-box" id="faq-answer" placeholder="Answer">
+    <button onclick="addFAQ()">Add FAQ</button>
+    <div class="faq-list" id="faq-list"></div>
+</div>
+
+<div class="integrate-content">
+    <h2>Integrate Additional Content</h2>
+    <input type="text" class="input-box" id="content-title" placeholder="Title">
+    <textarea class="input-box" id="content-body" placeholder="Content"></textarea>
+    <button onclick="addContent()">Add Content</button>
+    <div class="content-list" id="content-list"></div>
+</div>
+
+<script>
+    function addFAQ() {
+        const question = document.getElementById('faq-question').value;
+        const answer = document.getElementById('faq-answer').value;
+
+        if (question && answer) {
+            const faqList = document.getElementById('faq-list');
+            const faqItem = document.createElement('div');
+            faqItem.className = 'faq-item';
+            faqItem.innerHTML = `<strong>Q:</strong> ${question}<br><strong>A:</strong> ${answer}`;
+            faqList.appendChild(faqItem);
+
+            // Clear input fields
+            document.getElementById('faq-question').value = '';
+            document.getElementById('faq-answer').value = '';
+        } else {
+            alert('Please fill in both the question and answer.');
+        }
+    }
+
+    function addContent() {
+        const title = document.getElementById('content-title').value;
+        const content = document.getElementById('content-body').value;
+
+        if (title && content) {
+            const contentList = document.getElementById('content-list');
+            const contentItem = document.createElement('div');
+            contentItem.className = 'content-item';
+            contentItem.innerHTML = `<strong>${title}</strong><br>${content}`;
+            contentList.appendChild(contentItem);
+
+            // Clear input fields
+            document.getElementById('content-title').value = '';
+            document.getElementById('content-body').value = '';
+        } else {
+            alert('Please fill in both the title and content.');
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Knowledge Base Management</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="admin.html">Admin Dashboard</a>
+            <a href="logout.html">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="manage-faqs">
+            <h2>Manage FAQs</h2>
+            <form id="faq-form">
+                <input type="text" id="faq-question" placeholder="Question" required>
+                <textarea id="faq-answer" placeholder="Answer" required></textarea>
+                <button type="submit">Add FAQ</button>
+                <input type="hidden" id="faq-id" value="">
+            </form>
+            <div id="faq-list">
+                <h3>Existing FAQs</h3>
+                <ul id="faqs"></ul>
+            </div>
+        </section>
+
+        <section id="manage-content">
+            <h2>Integrate Additional Content</h2>
+            <form id="content-form">
+                <input type="text" id="content-title" placeholder="Title" required>
+                <textarea id="content-body" placeholder="Content" required></textarea>
+                <button type="submit">Add Content</button>
+            </form>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 AI Business Consulting. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Sample data structure for FAQs
+        let faqs = [];
+
+        // Load existing FAQs from localStorage (for simplicity)
+        window.onload = function() {
+            loadFAQs();
+        };
+
+        // Load FAQs from localStorage
+        function loadFAQs() {
+            const storedFAQs = localStorage.getItem("faqs");
+            faqs = storedFAQs ? JSON.parse(storedFAQs) : [];
+            displayFAQs();
+        }
+
+        // Display FAQs
+        function displayFAQs() {
+            const faqList = document.getElementById("faqs");
+            faqList.innerHTML = ""; // Clear existing list
+            faqs.forEach((faq, index) => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <strong>${faq.question}</strong>: ${faq.answer} 
+                    <button onclick="editFAQ(${index})">Edit</button>
+                    <button onclick="deleteFAQ(${index})">Delete</button>
+                `;
+                faqList.appendChild(listItem);
+            });
+        }
+
+        // Add or update FAQ
+        document.getElementById("faq-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const question = document.getElementById("faq-question").value;
+            const answer = document.getElementById("faq-answer").value;
+            const faqId = document.getElementById("faq-id").value;
+
+            if (faqId) {
+                // Update existing FAQ
+                faqs[faqId] = { question, answer };
+            } else {
+                // Add new FAQ
+                faqs.push({ question, answer });
+            }
+            saveFAQs();
+            displayFAQs();
+            this.reset();
+        });
+
+        // Edit FAQ
+        function editFAQ(index) {
+            const faq = faqs[index];
+            document.getElementById("faq-question").value = faq.question;
+            document.getElementById("faq-answer").value = faq.answer;
+            document.getElementById("faq-id").value = index;
+        }
+
+        // Delete FAQ
+        function deleteFAQ(index) {
+            faqs.splice(index, 1);
+            saveFAQs();
+            displayFAQs();
+        }
+
+        // Save FAQs to localStorage
+        function saveFAQs() {
+            localStorage.setItem("faqs", JSON.stringify(faqs));
+        }
+
+        // Content integration functionality (placeholder)
+        document.getElementById("content-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const title = document.getElementById("content-title").value;
+            const body = document.getElementById("content-body").value;
+            // Add your content integration logic here (e.g., saving to a database)
+            alert(`Content titled "${title}" has been added!`);
+            this.reset();
+        });
+    </script>
+</body>
+</html>

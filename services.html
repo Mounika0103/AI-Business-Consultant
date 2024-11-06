@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - AI Business Consulting</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Our Services</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="services-list">
+            <h2>Our Services</h2>
+            <ul>
+                <li>AI-Driven Business Consulting</li>
+                <li>Business Insights & Strategy Development</li>
+                <li>Lead Generation Optimization</li>
+                <li>Content Generation</li>
+                <li>Chat with AI and Voice-Activated Assistance</li>
+            </ul>
+        </section>
+
+        <!-- Chat with AI Section -->
+        <section id="chat-with-ai">
+            <h2>Chat with AI</h2>
+            <p>Ask our AI any questions about business consulting, marketing strategy, or other services.</p>
+
+            <!-- Chat Interface -->
+            <div id="chat-interface">
+                <div id="chat-output"></div>
+                <input type="text" id="chat-input" placeholder="Type your question here..." onkeypress="handleChatKeyPress(event)">
+                <button onclick="sendChatMessage()">Send</button>
+            </div>
+
+            <!-- Voice Interaction Buttons -->
+            <div id="voice-controls">
+                <button id="voice-toggle" type="button" onclick="toggleVoiceInteraction()">Enable Voice Assistant</button>
+                <button id="activate-voice" type="button" onclick="startVoiceAssistant()" style="display: none;">Activate Voice Assistant</button>
+                <p id="response"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 AI Business Consulting. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Initialize voice recognition and text-to-speech
+        let recognition;
+        let voiceInteractionEnabled = false;
+
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                console.log("User said: ", transcript);
+                handleVoiceCommand(transcript);
+            };
+        } else {
+            alert("Sorry, your browser does not support speech recognition.");
+        }
+
+        // Text-to-Speech function
+        function speakResponse(response) {
+            const speech = new SpeechSynthesisUtterance(response);
+            window.speechSynthesis.speak(speech);
+            document.getElementById("response").innerText = response;
+        }
+
+        // Function to start the voice assistant
+        function startVoiceAssistant() {
+            if (recognition && voiceInteractionEnabled) {
+                recognition.start();
+                document.getElementById("response").innerText = "Voice Assistant Activated. Ask a question or request navigation.";
+            }
+        }
+
+        // Toggle voice interaction on and off
+        function toggleVoiceInteraction() {
+            voiceInteractionEnabled = !voiceInteractionEnabled;
+            const button = document.getElementById("voice-toggle");
+            const activateButton = document.getElementById("activate-voice");
+
+            if (voiceInteractionEnabled) {
+                button.innerText = "Disable Voice Assistant";
+                activateButton.style.display = "inline";
+                speakResponse("Voice interaction enabled. You can now ask questions.");
+            } else {
+                button.innerText = "Enable Voice Assistant";
+                activateButton.style.display = "none";
+                speakResponse("Voice interaction disabled. You can still use the chat.");
+            }
+        }
+
+        // Chat AI Logic
+        function sendChatMessage() {
+            const chatInput = document.getElementById("chat-input");
+            const message = chatInput.value.trim();
+
+            if (message) {
+                displayMessage("User: " + message, "user-message");
+                generateAIResponse(message);
+                chatInput.value = "";
+            }
+        }
+
+        // Handle pressing Enter to send chat
+        function handleChatKeyPress(event) {
+            if (event.key === "Enter") {
+                sendChatMessage();
+            }
+        }
+
+        // Display chat messages
+        function displayMessage(message, className) {
+            const chatOutput = document.getElementById("chat-output");
+            const messageElement = document.createElement("div");
+            messageElement.className = className;
+            messageElement.innerText = message;
+            chatOutput.appendChild(messageElement);
+            chatOutput.scrollTop = chatOutput.scrollHeight;
+        }
+
+        // Generate AI response
+        function generateAIResponse(userMessage) {
+            const defaultResponses = {
+                "consulting": "Our consulting services help optimize your business strategy through data-driven insights.",
+                "lead generation": "We provide strategies to enhance lead generation, including targeted content and lead magnet ideas.",
+                "content generation": "Our AI can generate high-quality content tailored to your business needs.",
+                "default": "Thank you for your question! How can I assist you further?"
+            };
+
+            let response = defaultResponses["default"];
+
+            for (const key in defaultResponses) {
+                if (userMessage.toLowerCase().includes(key)) {
+                    response = defaultResponses[key];
+                    break;
+                }
+            }
+
+            displayMessage("AI: " + response, "ai-message");
+            speakResponse(response);
+        }
+
+        // Handle Voice Commands
+        function handleVoiceCommand(transcript) {
+            generateAIResponse(transcript);
+        }
+        
+    </script>
+</body>
+</html>
